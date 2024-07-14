@@ -1,64 +1,64 @@
 const db = require("../models");
-const Materi = db.materi;
+const Penilaian = db.penilaian;
 const { Op } = db.Sequelize;
 
-// Create a new Materi
+// Create a new Penilaian
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.name_materi) {
+    if (!req.body.form_penilaian) {
         res.status(400).send({
-            message: "Name materi cannot be empty!"
+            message: "Form penilaian cannot be empty!"
         });
         return;
     }
 
-    // Create a Materi object
-    const materi = {
-        kategori_id: req.body.kategori_id,
-        name_materi: req.body.name_materi,
-        img_materi: req.body.img_materi,
-        ket_materi: req.body.ket_materi,
+    // Create a Penilaian object
+    const penilaian = {
+        user_id: req.body.user_id,
+        draw_id: req.body.draw_id,
+        form_penilaian: req.body.form_penilaian,
+        ket_penilaian: req.body.ket_penilaian,
         created_at: req.body.created_at ? new Date(req.body.created_at) : new Date(),
         updated_at: req.body.updated_at ? new Date(req.body.updated_at) : new Date()
     };
 
-    // Save Materi in the database
-    Materi.create(materi)
+    // Save Penilaian in the database
+    Penilaian.create(penilaian)
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while creating the materi."
+                message: err.message || "Some error occurred while creating the penilaian."
             });
         });
 };
 
-// Retrieve all Materis from the database
+// Retrieve all Penilaians from the database
 exports.findAll = (req, res) => {
-    const name_materi = req.query.name_materi;
-    var condition = name_materi ? { name_materi: { [Op.iLike]: `%${name_materi}%` } } : null;
+    const form_penilaian = req.query.form_penilaian;
+    var condition = form_penilaian ? { form_penilaian: { [Op.iLike]: `%${form_penilaian}%` } } : null;
 
-    Materi.findAll({ where: condition })
+    Penilaian.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while retrieving materis."
+                message: err.message || "Some error occurred while retrieving penilaians."
             });
         });
 };
 
-// Find a single Materi with an id
+// Find a single Penilaian with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    Materi.findByPk(id)
+    Penilaian.findByPk(id)
         .then(data => {
             if (!data) {
                 res.status(404).send({
-                    message: `Materi with id=${id} was not found.`
+                    message: `Penilaian with id=${id} was not found.`
                 });
                 return;
             }
@@ -66,73 +66,73 @@ exports.findOne = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving materi with id=" + id
+                message: "Error retrieving penilaian with id=" + id
             });
         });
 };
 
-// Update a Materi by the id in the request
+// Update a Penilaian by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    Materi.update(req.body, {
+    Penilaian.update(req.body, {
         where: { id: id }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Materi was updated successfully."
+                    message: "Penilaian was updated successfully."
                 });
             } else {
                 res.send({
-                    message: `Cannot update materi with id=${id}. Maybe materi was not found or req.body is empty!`
+                    message: `Cannot update penilaian with id=${id}. Maybe penilaian was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating materi with id=" + id
+                message: "Error updating penilaian with id=" + id
             });
         });
 };
 
-// Delete a Materi with the specified id in the request
+// Delete a Penilaian with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    Materi.destroy({
+    Penilaian.destroy({
         where: { id: id }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Materi was deleted successfully!"
+                    message: "Penilaian was deleted successfully!"
                 });
             } else {
                 res.send({
-                    message: `Cannot delete materi with id=${id}. Maybe materi was not found!`
+                    message: `Cannot delete penilaian with id=${id}. Maybe penilaian was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete materi with id=" + id
+                message: "Could not delete penilaian with id=" + id
             });
         });
 };
 
-// Delete all Materis from the database
+// Delete all Penilaians from the database
 exports.deleteAll = (req, res) => {
-    Materi.destroy({
+    Penilaian.destroy({
         where: {},
         truncate: false
     })
         .then(nums => {
-            res.send({ message: `${nums} materis were deleted successfully!` });
+            res.send({ message: `${nums} penilaians were deleted successfully!` });
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while removing all materis."
+                message: err.message || "Some error occurred while removing all penilaians."
             });
         });
 };

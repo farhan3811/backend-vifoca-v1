@@ -1,20 +1,20 @@
 module.exports = (sequelize, Sequelize) => {
-    const Materi = sequelize.define("materi", {
+    const Penilaian = sequelize.define("penilaian", {
         id: {
             type: Sequelize.BIGINT,
             primaryKey: true,
             autoIncrement: true
         },
-        kategori_id: {
-            type: Sequelize.INTEGER
+        user_id: {
+            type: Sequelize.BIGINT
         },
-        name_materi: {
+        draw_id: {
+            type: Sequelize.BIGINT
+        },
+        form_penilaian: {
             type: Sequelize.STRING
         },
-        img_materi: {
-            type: Sequelize.TEXT
-        },
-        ket_materi: {
+        ket_penilaian: {
             type: Sequelize.TEXT
         },
         created_at: {
@@ -30,5 +30,5 @@ module.exports = (sequelize, Sequelize) => {
         underscored: true
     });
 
-    return Materi;
+    return Penilaian;
 };

@@ -1,21 +1,24 @@
 module.exports = (sequelize, Sequelize) => {
-    const Materi = sequelize.define("materi", {
+    const Assigment = sequelize.define("assigment", {
         id: {
             type: Sequelize.BIGINT,
             primaryKey: true,
             autoIncrement: true
         },
-        kategori_id: {
-            type: Sequelize.INTEGER
+        materi_id: {
+            type: Sequelize.BIGINT
         },
-        name_materi: {
+        nama_soal: {
             type: Sequelize.STRING
         },
-        img_materi: {
+        status_level: {
+            type: Sequelize.STRING
+        },
+        ket_assigment: {
             type: Sequelize.TEXT
         },
-        ket_materi: {
-            type: Sequelize.TEXT
+        deadline: {
+            type: Sequelize.DATE
         },
         created_at: {
             type: Sequelize.DATE,
@@ -30,5 +33,5 @@ module.exports = (sequelize, Sequelize) => {
         underscored: true
     });
 
-    return Materi;
+    return Assigment;
 };

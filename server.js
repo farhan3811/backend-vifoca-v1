@@ -23,6 +23,11 @@ app.get("/", (req, res) => {
 
 require("./routes/biodata.routes")(app);
 require("./routes/user.routes")(app);
+require("./routes/roles.routes")(app);
+require("./routes/materi.routes")(app);
+require("./routes/assigment.routes")(app);
+require("./routes/draw.routes")(app);
+require("./routes/penilaian.routes")(app);
 
 // Port server
 const PORT = process.env.PORT || 4000;

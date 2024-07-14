@@ -1,64 +1,63 @@
 const db = require("../models");
-const Materi = db.materi;
+const Draw = db.draw;
 const { Op } = db.Sequelize;
 
-// Create a new Materi
+// Create a new Draw
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.name_materi) {
+    if (!req.body.answer) {
         res.status(400).send({
-            message: "Name materi cannot be empty!"
+            message: "Answer cannot be empty!"
         });
         return;
     }
 
-    // Create a Materi object
-    const materi = {
-        kategori_id: req.body.kategori_id,
-        name_materi: req.body.name_materi,
-        img_materi: req.body.img_materi,
-        ket_materi: req.body.ket_materi,
+    // Create a Draw object
+    const draw = {
+        user_id: req.body.user_id,
+        assigment_id: req.body.assigment_id,
+        answer: req.body.answer,
         created_at: req.body.created_at ? new Date(req.body.created_at) : new Date(),
         updated_at: req.body.updated_at ? new Date(req.body.updated_at) : new Date()
     };
 
-    // Save Materi in the database
-    Materi.create(materi)
+    // Save Draw in the database
+    Draw.create(draw)
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while creating the materi."
+                message: err.message || "Some error occurred while creating the draw."
             });
         });
 };
 
-// Retrieve all Materis from the database
+// Retrieve all Draws from the database
 exports.findAll = (req, res) => {
-    const name_materi = req.query.name_materi;
-    var condition = name_materi ? { name_materi: { [Op.iLike]: `%${name_materi}%` } } : null;
+    const answer = req.query.answer;
+    var condition = answer ? { answer: { [Op.iLike]: `%${answer}%` } } : null;
 
-    Materi.findAll({ where: condition })
+    Draw.findAll({ where: condition })
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while retrieving materis."
+                message: err.message || "Some error occurred while retrieving draws."
             });
         });
 };
 
-// Find a single Materi with an id
+// Find a single Draw with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    Materi.findByPk(id)
+    Draw.findByPk(id)
         .then(data => {
             if (!data) {
                 res.status(404).send({
-                    message: `Materi with id=${id} was not found.`
+                    message: `Draw with id=${id} was not found.`
                 });
                 return;
             }
@@ -66,73 +65,73 @@ exports.findOne = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving materi with id=" + id
+                message: "Error retrieving draw with id=" + id
             });
         });
 };
 
-// Update a Materi by the id in the request
+// Update a Draw by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    Materi.update(req.body, {
+    Draw.update(req.body, {
         where: { id: id }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Materi was updated successfully."
+                    message: "Draw was updated successfully."
                 });
             } else {
                 res.send({
-                    message: `Cannot update materi with id=${id}. Maybe materi was not found or req.body is empty!`
+                    message: `Cannot update draw with id=${id}. Maybe draw was not found or req.body is empty!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating materi with id=" + id
+                message: "Error updating draw with id=" + id
             });
         });
 };
 
-// Delete a Materi with the specified id in the request
+// Delete a Draw with the specified id in the request
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    Materi.destroy({
+    Draw.destroy({
         where: { id: id }
     })
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "Materi was deleted successfully!"
+                    message: "Draw was deleted successfully!"
                 });
             } else {
                 res.send({
-                    message: `Cannot delete materi with id=${id}. Maybe materi was not found!`
+                    message: `Cannot delete draw with id=${id}. Maybe draw was not found!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Could not delete materi with id=" + id
+                message: "Could not delete draw with id=" + id
             });
         });
 };
 
-// Delete all Materis from the database
+// Delete all Draws from the database
 exports.deleteAll = (req, res) => {
-    Materi.destroy({
+    Draw.destroy({
         where: {},
         truncate: false
     })
         .then(nums => {
-            res.send({ message: `${nums} materis were deleted successfully!` });
+            res.send({ message: `${nums} draws were deleted successfully!` });
         })
         .catch(err => {
             res.status(500).send({
-                message: err.message || "Some error occurred while removing all materis."
+                message: err.message || "Some error occurred while removing all draws."
             });
         });
 };
