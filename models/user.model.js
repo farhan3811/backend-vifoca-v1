@@ -11,6 +11,9 @@ module.exports = (sequelize, Sequelize) => {
         name: {
             type: Sequelize.STRING
         },
+        prodi: {
+            type: Sequelize.STRING
+        },
         nim: {
             type: Sequelize.BIGINT
         },

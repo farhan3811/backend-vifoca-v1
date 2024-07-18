@@ -6,12 +6,6 @@ module.exports = (sequelize, Sequelize) => {
     tanggal_lahir: {
       type: Sequelize.DATE
     },
-    alamat: {
-      type: Sequelize.STRING
-    },
-    email: {
-      type: Sequelize.STRING
-    },
     nomor_telp: {
       type: Sequelize.STRING
     },

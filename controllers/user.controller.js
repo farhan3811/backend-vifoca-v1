@@ -4,23 +4,16 @@ const { Op } = db.Sequelize;
 
 // Create a new User
 exports.create = (req, res) => {
-    // Validate request
+
     if (!req.body.name || !req.body.email) {
-        res.status(400).send({
+        return res.status(400).send({
             message: "Name and email cannot be empty!"
         });
-        return;
     }
-
-    // Convert id to integer
-    const id = parseInt(req.body.id, 10);
-    const role_id = parseInt(req.body.role_id, 10);
-
-    // Convert nim to BigInt
+    const id = req.body.id ? parseInt(req.body.id, 10) : null;
+    const role_id = req.body.role_id ? parseInt(req.body.role_id, 10) : null;
     const nim = req.body.nim ? BigInt(req.body.nim) : null;
     const biodata_id = req.body.biodata_id ? BigInt(req.body.biodata_id) : null;
-
-    // Convert created_at and updated_at to Date objects
     const createdAt = req.body.created_at ? new Date(req.body.created_at) : new Date();
     const updatedAt = req.body.updated_at ? new Date(req.body.updated_at) : new Date();
 
@@ -29,6 +22,7 @@ exports.create = (req, res) => {
         id: id,
         role_id: role_id,
         name: req.body.name,
+        prodi: req.body.prodi,
         nim: nim,
         username: req.body.username,
         email: req.body.email,
@@ -54,7 +48,7 @@ exports.create = (req, res) => {
 // Retrieve all Users from the database
 exports.findAll = (req, res) => {
     const name = req.query.name;
-    var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
+    const condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
 
     User.findAll({ where: condition })
         .then(data => {

@@ -5,19 +5,20 @@ const { Op } = db.Sequelize;
 // Create and Save a new Biodata
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.nama_lengkap || !req.body.tanggal_lahir || !req.body.alamat) {
+  if (!req.body.nama_lengkap) {
     res.status(400).send({
-      message: "Nama lengkap, tanggal lahir, dan alamat tidak boleh kosong!"
+      message: "Nama lengkap tidak boleh kosong!"
     });
     return;
   }
 
-  // Create a Biodata
+  const nim = req.body.nim ? BigInt(req.body.nim) : null;
+  
+  // Create a Biodata object with optional fields
   const biodata = {
     nama_lengkap: req.body.nama_lengkap,
-    tanggal_lahir: req.body.tanggal_lahir,
-    alamat: req.body.alamat,
-    email: req.body.email,
+    tanggal_lahir: req.body.tanggal_lahir || null, // Allow tanggal_lahir to be null or empty
+    alamat: req.body.alamat || null, // Allow alamat to be null or empty
     nomor_telp: req.body.nomor_telp,
     createdAt: new Date(),
     updatedAt: new Date()
