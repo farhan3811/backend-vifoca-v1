@@ -14,6 +14,9 @@ module.exports = (sequelize, Sequelize) => {
         status_level: {
             type: Sequelize.STRING
         },
+        foto_tugas: {
+            type: Sequelize.TEXT
+        },
         ket_assigment: {
             type: Sequelize.TEXT
         },

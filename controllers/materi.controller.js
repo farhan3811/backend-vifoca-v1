@@ -18,6 +18,7 @@ exports.create = (req, res) => {
         name_materi: req.body.name_materi,
         img_materi: req.body.img_materi,
         ket_materi: req.body.ket_materi,
+        vid_materi: req.body.vid_materi,
         created_at: req.body.created_at ? new Date(req.body.created_at) : new Date(),
         updated_at: req.body.updated_at ? new Date(req.body.updated_at) : new Date()
     };

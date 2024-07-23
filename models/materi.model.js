@@ -17,6 +17,9 @@ module.exports = (sequelize, Sequelize) => {
         ket_materi: {
             type: Sequelize.TEXT
         },
+        vid_materi: {
+            type: Sequelize.TEXT
+        },
         created_at: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW

@@ -17,6 +17,7 @@ exports.create = (req, res) => {
         materi_id: req.body.materi_id,
         nama_soal: req.body.nama_soal,
         status_level: req.body.status_level,
+        foto_tugas: req.body.foto_tugas,
         ket_assigment: req.body.ket_assigment,
         deadline: req.body.deadline ? new Date(req.body.deadline) : null,
         created_at: req.body.created_at ? new Date(req.body.created_at) : new Date(),
