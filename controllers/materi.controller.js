@@ -76,6 +76,8 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
 
+    req.body.updated_at = new Date();
+
     Materi.update(req.body, {
         where: { id: id }
     })

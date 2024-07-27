@@ -1,3 +1,5 @@
+const moment = require('moment-timezone');
+
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
         id: {
@@ -34,15 +36,23 @@ module.exports = (sequelize, Sequelize) => {
         },
         created_at: {
             type: Sequelize.DATE,
-            defaultValue: Sequelize.NOW
         },
         updated_at: {
             type: Sequelize.DATE,
-            defaultValue: Sequelize.NOW
         }
     }, {
         timestamps: false,
-        underscored: true
+        underscored: true,
+        hooks: {
+            beforeCreate: (user, options) => {
+                const currentDateTimeInWIB = moment().tz('Asia/Jakarta').format("YYYY-MM-DD HH:mm:ss");
+                user.created_at = currentDateTimeInWIB;
+                user.updated_at = currentDateTimeInWIB;
+            },
+            beforeUpdate: (user, options) => {
+                user.updated_at = moment().tz('Asia/Jakarta').format("YYYY-MM-DD HH:mm:ss");
+            }
+        }
     });
 
     return User;
