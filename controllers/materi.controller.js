@@ -14,6 +14,7 @@ exports.create = (req, res) => {
 
     // Create a Materi object
     const materi = {
+        id: req.body.id ? BigInt(req.body.id) : null,
         kategori_id: req.body.kategori_id,
         name_materi: req.body.name_materi,
         img_materi: req.body.img_materi,
@@ -35,14 +36,27 @@ exports.create = (req, res) => {
         });
 };
 
-// Retrieve all Materis from the database
+// Retrieve all Materis from the database with pagination, sorting, and searching
 exports.findAll = (req, res) => {
-    const name_materi = req.query.name_materi;
-    var condition = name_materi ? { name_materi: { [Op.iLike]: `%${name_materi}%` } } : null;
+    const name_materi = req.query.name;
+    const sortOrder = req.query.sortOrder || 'desc';
+    const page = parseInt(req.query.page) || 1;
+    const size = parseInt(req.query.size) || 5;
 
-    Materi.findAll({ where: condition })
+    const condition = name_materi ? { name_materi: { [Op.iLike]: `%${name_materi}%` } } : null;
+    const order = [['updated_at', sortOrder.toUpperCase()]];
+    const limit = size;
+    const offset = (page - 1) * size;
+
+    Materi.findAndCountAll({ where: condition, order, limit, offset })
         .then(data => {
-            res.send(data);
+            const totalPages = Math.ceil(data.count / size);
+            res.send({
+                materis: data.rows,
+                totalPages: totalPages,
+                currentPage: page,
+                pageSize: size
+            });
         })
         .catch(err => {
             res.status(500).send({
@@ -53,7 +67,7 @@ exports.findAll = (req, res) => {
 
 // Find a single Materi with an id
 exports.findOne = (req, res) => {
-    const id = req.params.id;
+    const id = BigInt(req.params.id); // Convert id to BigInt
 
     Materi.findByPk(id)
         .then(data => {
@@ -74,7 +88,7 @@ exports.findOne = (req, res) => {
 
 // Update a Materi by the id in the request
 exports.update = (req, res) => {
-    const id = req.params.id;
+    const id = BigInt(req.params.id); // Convert id to BigInt
 
     req.body.updated_at = new Date();
 
@@ -82,7 +96,7 @@ exports.update = (req, res) => {
         where: { id: id }
     })
         .then(num => {
-            if (num == 1) {
+            if (num[0] === 1) { // Sequelize returns an array with the count of updated rows
                 res.send({
                     message: "Materi was updated successfully."
                 });
@@ -101,13 +115,13 @@ exports.update = (req, res) => {
 
 // Delete a Materi with the specified id in the request
 exports.delete = (req, res) => {
-    const id = req.params.id;
+    const id = BigInt(req.params.id); // Convert id to BigInt
 
     Materi.destroy({
         where: { id: id }
     })
         .then(num => {
-            if (num == 1) {
+            if (num === 1) { // Sequelize returns the count of deleted rows
                 res.send({
                     message: "Materi was deleted successfully!"
                 });
@@ -118,6 +132,7 @@ exports.delete = (req, res) => {
             }
         })
         .catch(err => {
+            console.error("Could not delete materi with id:", id, err);
             res.status(500).send({
                 message: "Could not delete materi with id=" + id
             });
