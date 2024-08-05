@@ -12,6 +12,12 @@ exports.create = (req, res) => {
         return;
     }
 
+    // Function to parse and validate date
+    const parseDate = (dateString) => {
+        const date = new Date(dateString);
+        return isNaN(date.getTime()) ? new Date() : date;
+    };
+
     // Create a Materi object
     const materi = {
         id: req.body.id ? BigInt(req.body.id) : null,
@@ -20,8 +26,8 @@ exports.create = (req, res) => {
         img_materi: req.file ? req.file.path : null, // URL gambar
         ket_materi: req.body.ket_materi,
         vid_materi: req.body.vid_materi,
-        created_at: req.body.created_at ? new Date(req.body.created_at) : new Date(),
-        updated_at: req.body.updated_at ? new Date(req.body.updated_at) : new Date()
+        created_at: parseDate(req.body.created_at),
+        updated_at: parseDate(req.body.updated_at)
     };
 
     // Save Materi in the database

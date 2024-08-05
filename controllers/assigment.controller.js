@@ -5,9 +5,9 @@ const { Op } = db.Sequelize;
 // Create a new Assigment
 exports.create = (req, res) => {
     // Validate request
-    if (!req.body.nama_soal) {
+    if (!req.body.nama_soal || !req.body.foto_tugas) {
         res.status(400).send({
-            message: "Nama soal cannot be empty!"
+            message: "Nama soal and foto tugas cannot be empty!"
         });
         return;
     }
@@ -17,7 +17,7 @@ exports.create = (req, res) => {
         materi_id: req.body.materi_id,
         nama_soal: req.body.nama_soal,
         status_level: req.body.status_level,
-        foto_tugas: req.body.foto_tugas,
+        foto_tugas: req.file ? req.file.path : null, // Handle file upload
         ket_assigment: req.body.ket_assigment,
         deadline: req.body.deadline ? new Date(req.body.deadline) : null,
         created_at: req.body.created_at ? new Date(req.body.created_at) : new Date(),
@@ -39,11 +39,23 @@ exports.create = (req, res) => {
 // Retrieve all Assigments from the database
 exports.findAll = (req, res) => {
     const nama_soal = req.query.nama_soal;
+    const page = parseInt(req.query.page) || 1;
+    const size = parseInt(req.query.size) || 10;
+    const offset = (page - 1) * size;
+
     var condition = nama_soal ? { nama_soal: { [Op.iLike]: `%${nama_soal}%` } } : null;
 
-    Assigment.findAll({ where: condition })
+    Assigment.findAndCountAll({
+        where: condition,
+        limit: size,
+        offset: offset
+    })
         .then(data => {
-            res.send(data);
+            res.send({
+                assignments: data.rows,
+                totalPages: Math.ceil(data.count / size),
+                currentPage: page
+            });
         })
         .catch(err => {
             res.status(500).send({
@@ -51,7 +63,6 @@ exports.findAll = (req, res) => {
             });
         });
 };
-
 // Find a single Assigment with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
