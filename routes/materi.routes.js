@@ -1,10 +1,11 @@
 module.exports = app => {
     const materis = require("../controllers/materi.controller.js");
+    const upload = require("../middlewares/upload"); // Import the upload middleware
 
     var router = require("express").Router();
 
-    // Create a new Materi
-    router.post("/", materis.create);
+    // Create a new Materi with file upload
+    router.post("/", upload.single('img_materi'), materis.create);
 
     // Retrieve all Materis
     router.get("/", materis.findAll);

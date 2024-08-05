@@ -2,7 +2,9 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const db = require("./models");
+const path = require('path');
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Menggunakan Sequelize untuk sinkronisasi dengan database
 db.sequelize.sync();
 

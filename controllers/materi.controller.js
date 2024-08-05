@@ -17,7 +17,7 @@ exports.create = (req, res) => {
         id: req.body.id ? BigInt(req.body.id) : null,
         kategori_id: req.body.kategori_id,
         name_materi: req.body.name_materi,
-        img_materi: req.body.img_materi,
+        img_materi: req.file ? req.file.path : null, // URL gambar
         ket_materi: req.body.ket_materi,
         vid_materi: req.body.vid_materi,
         created_at: req.body.created_at ? new Date(req.body.created_at) : new Date(),
