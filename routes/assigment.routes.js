@@ -1,7 +1,11 @@
 module.exports = app => {
     const assigments = require("../controllers/assigment.controller.js");
+    const upload = require("../middlewares/upload"); // Import the upload middleware
 
     var router = require("express").Router();
+
+    // Create a new Materi with file upload
+    router.post("/", upload.single('foto_tugas'), assigments.create);
 
     // Create a new Assigment
     router.post("/", assigments.create);
