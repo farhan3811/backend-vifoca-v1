@@ -93,30 +93,51 @@ exports.findOne = (req, res) => {
 };
 
 // Update a Materi by the id in the request
-exports.update = (req, res) => {
+exports.update = async (req, res) => {
     const id = BigInt(req.params.id); // Convert id to BigInt
 
-    req.body.updated_at = new Date();
+    try {
+        // Fetch the existing record first
+        const existingMateri = await Materi.findByPk(id);
 
-    Materi.update(req.body, {
-        where: { id: id }
-    })
-        .then(num => {
-            if (num[0] === 1) { // Sequelize returns an array with the count of updated rows
-                res.send({
-                    message: "Materi was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update materi with id=${id}. Maybe materi was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating materi with id=" + id
+        if (!existingMateri) {
+            return res.status(404).send({
+                message: `Materi with id=${id} was not found.`
             });
+        }
+
+        // Prepare update data
+        const updateData = {
+            ...req.body,
+            updated_at: new Date(),
+        };
+
+        // Handle file update if a new file is uploaded
+        if (req.file) {
+            updateData.img_materi = req.file.path;
+        } else {
+            // Preserve existing file if not updated
+            updateData.img_materi = existingMateri.img_materi;
+        }
+
+        const [updated] = await Materi.update(updateData, {
+            where: { id: id }
         });
+
+        if (updated) {
+            res.send({
+                message: "Materi was updated successfully."
+            });
+        } else {
+            res.send({
+                message: `Cannot update materi with id=${id}. Maybe materi was not found or req.body is empty!`
+            });
+        }
+    } catch (err) {
+        res.status(500).send({
+            message: "Error updating materi with id=" + id
+        });
+    }
 };
 
 // Delete a Materi with the specified id in the request
